@@ -36,7 +36,7 @@ pub struct DbInstances(pub RwLock<HashMap<String, DbPool>>);
 
 #[derive(Serialize)]
 #[serde(untagged)]
-pub(crate) enum LastInsertId {
+pub enum LastInsertId {
     #[cfg(feature = "sqlite")]
     Sqlite(i64),
     #[cfg(feature = "mysql")]

@@ -63,9 +63,8 @@ pub enum DbPool {
     }
 } */
 
-// private methods
 impl DbPool {
-    pub(crate) async fn connect<R: Runtime>(
+    pub async fn connect<R: Runtime>(
         conn_url: &str,
         _app: &AppHandle<R>,
     ) -> Result<Self, crate::Error> {
@@ -113,7 +112,7 @@ impl DbPool {
         }
     }
 
-    pub(crate) async fn migrate(
+    pub async fn migrate(
         &self,
         _migrator: &sqlx::migrate::Migrator,
     ) -> Result<(), crate::Error> {
@@ -130,7 +129,7 @@ impl DbPool {
         Ok(())
     }
 
-    pub(crate) async fn close(&self) {
+    pub async fn close(&self) {
         match self {
             #[cfg(feature = "sqlite")]
             DbPool::Sqlite(pool) => pool.close().await,
@@ -143,7 +142,7 @@ impl DbPool {
         }
     }
 
-    pub(crate) async fn execute(
+    pub async fn execute(
         &self,
         _query: String,
         _values: Vec<JsonValue>,
@@ -211,7 +210,7 @@ impl DbPool {
         })
     }
 
-    pub(crate) async fn select(
+    pub async fn select(
         &self,
         _query: String,
         _values: Vec<JsonValue>,
