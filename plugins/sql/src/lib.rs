@@ -118,6 +118,7 @@ fn run_async_command<F: std::future::Future>(cmd: F) -> F::Output {
 #[derive(Default)]
 pub struct Builder {
     migrations: Option<HashMap<String, MigrationList>>,
+    options: Option<HashMap<String, ConnectionOptions>>,
 }
 
 impl Builder {
@@ -137,6 +138,15 @@ impl Builder {
         self
     }
 
+    /// Set database options.
+    #[must_use]
+    pub fn set_options(mut self, db_url: &str, connection_options: ConnectionOptions) -> Self {
+        self.options
+            .get_or_insert(Default::default())
+            .insert(db_url.to_string(), connection_options);
+        self
+    }
+
     pub fn build<R: Runtime>(mut self) -> TauriPlugin<R, Option<PluginConfig>> {
         PluginBuilder::<R, Option<PluginConfig>>::new("sql")
             .invoke_handler(tauri::generate_handler![
@@ -153,7 +163,7 @@ impl Builder {
                     let mut lock = instances.0.write().await;
 
                     for db in config.preload {
-                        let pool = DbPool::connect(&db, app, None).await?;
+                        let pool = DbPool::connect(&db, app, self.options.as_mut().and_then(|mm| mm.remove(&db))).await?;
 
                         if let Some(migrations) =
                             self.migrations.as_mut().and_then(|mm| mm.remove(&db))

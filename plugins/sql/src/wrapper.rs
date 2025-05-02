@@ -12,7 +12,7 @@ use serde_json::Value as JsonValue;
 #[cfg(feature = "sqlite")]
 use sqlx::sqlite::SqliteConnectOptions;
 #[cfg(any(feature = "sqlite", feature = "mysql", feature = "postgres"))]
-use sqlx::{migrate::MigrateDatabase, Column, Executor, Pool, Row};
+use sqlx::{Column, Executor, Pool, Row};
 #[cfg(any(feature = "sqlite", feature = "mysql", feature = "postgres"))]
 use tauri::Manager;
 use tauri::{AppHandle, Runtime};
